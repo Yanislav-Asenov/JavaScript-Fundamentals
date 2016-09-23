@@ -1,10 +1,12 @@
-function solve([principal, interest, frequency, time]) {
-    [principal, interest, frequency, time] = [principal, interest, frequency, time].map(Number);
+function solve ([principal, interest, period, time]) {
+  [principal, interest, period, time] = [principal, interest, period, time].map(Number)
 
-    let n = 12 / frequency;
-    
-    let F = Math.pow((1 + interest / n), n * time);
+  interest /= 100
+  let frequency = 12 / period
 
+  let total = principal * Math.pow(1 + interest / frequency, frequency * time)
+
+  console.log(total.toFixed(2))
 }
 
-solve([1500, 4.3, 3, 6]);
+solve([1000, 5, 12, 25])

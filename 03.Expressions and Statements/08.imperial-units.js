@@ -1,8 +1,8 @@
-function solve([number]) {
-    number = Number(number);
-    let feet = parseInt(number / 12);
-    let inches = number % 12;
-    console.log(`${feet}'-${inches}"`);
+function solve ([num]) {
+  num = Number(num)
+  let feet = parseInt(num / 12)
+  let inches = num % 12
+  console.log(`${feet}'-${inches}"`)
 }
 
-solve(['36']);
+solve(['36'])

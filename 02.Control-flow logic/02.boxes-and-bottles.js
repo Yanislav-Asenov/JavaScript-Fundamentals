@@ -1,5 +1,5 @@
-function solve([n, k]) {
-    console.log(Math.ceil(n / k))
+function solve ([n, k]) {
+  console.log(Math.ceil(n / k))
 }
 
-solve(['5', '1']);
+solve(['5', '1'])
