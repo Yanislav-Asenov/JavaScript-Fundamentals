@@ -14,7 +14,6 @@ function solve (arr) {
 // Manage flea stats
   let hasWinner = false
   for (let trackRow = 0; trackRow < fleasArray.length; trackRow++) {
-
     for (let trackCol = 0; trackCol < numberOfJumpsAllowed; trackCol++) {
       for (let j = 0; j < fleasArray.length; j++) {
         let currentFlea = fleasArray[j]
@@ -71,7 +70,6 @@ function solve (arr) {
 
     console.log(trackRow)
   }
-
 
   printAudiance(trackLength)
   let winnerFlea
