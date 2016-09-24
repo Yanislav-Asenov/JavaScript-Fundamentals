@@ -1,69 +1,94 @@
-// function solve ([day, month, year]) {
-//   [day, month, year] = [day, month, year].map(Number)
-//   let currentDate = new Date(year, month - 1, day + 1)
-//   let currentDay = day
-//   let firstDayOfMonth = new Date(year, month - 1, 1).getDay()
+function solve ([day, month, year]) {
+  [day, month, year] = [day, month, year].map(Number)
+  let currentDate = new Date(year, month, 0)
+  let currentMonthFirstDayOfWeek = new Date(year, month - 1, 1).getDay()
+  let currentMonthLastDay = currentDate.getDate()
+  let previousMonthDaysToPrint = currentMonthFirstDayOfWeek - 1
+  let previousMonth = new Date(year, month - 1, 0)
+  let previousMonthLastDay = previousMonth.getDate()
+  let previousMonthStartDay = previousMonthLastDay - previousMonthDaysToPrint
+  let currentMonthFirstDaysCount = 7 - previousMonth.getDay() - 1
 
-//   console.log(`<table>
-//   <tr><th>Sun</th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th></tr>`)
+  console.log(`<table>`)
+  console.log(`  <tr><th>Sun</th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th></tr>`)
 
-//   printPreviousMonthDays(currentDate, firstDayOfMonth)
+  printFirstRow(previousMonthStartDay, previousMonthLastDay, currentMonthFirstDaysCount, day, currentMonthLastDay)
 
-//   function printPreviousMonthDays (currentDate, firstDayOfMonthAsWeekDay, currentDay) {
-//     // let daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
-//     let previousMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0)
-//     let lastDayOfPrevMoth = previousMonth.getDate()
-//     let startDayOfPevMonth = previousMonth.getDate() - firstDayOfMonth + 1
-//     let thisMonthLastDay = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate()
+  function printFirstRow (previousMonthStartDay, previousMonthLastDay, currentMonthFirstDaysCount, currentDay, currentMonthLastDay) {
+    let dayOfWeek = 1
+    let result = '  <tr>'
+    // Concatenate previous month days
+    for (let i = previousMonthStartDay; i <= previousMonthLastDay; i++) {
+      result += `<td class="prev-month">${i}</td>`
+      dayOfWeek++
+    }
 
-//     let resultString = '  <tr>'
-//     for (let i = startDayOfPevMonth; i <= lastDayOfPrevMoth; i++) {
-//       resultString += `<td class="prev-month">${i}</td>`
-//     }
+    let day = 1
+    // Concat current month firstDays
+    for (let i = dayOfWeek; i <= 7; i++) {
+      if (day === currentDay) {
+        result += `<td class="today">${day++}</td>`
+      } else {
+        result += `<td>${day++}</td>`
+      }
+    }
 
-//     let dayCounter = 1
-//     for (let i = firstDayOfMonthAsWeekDay; i < 7; i++) {
-//       if (dayCounter === currentDay) {
-//         resultString += `<td class="today">${dayCounter}</td>`
-//       } else {
-//         resultString += `<td>${dayCounter++}</td>`
-//       }
-//     }
-//     resultString += '</tr>'
-//     console.log(resultString)
+    result += '</tr>'
+    console.log(result)
+    let isMonthOver = false
+    for (let i = 1; i <= 4; i++) {
+      result = '  <tr>'
+      for (let j = 1; j <= 7; j++) {
+        if (day === currentDay) {
+          result += `<td class="today">${day++}</td>`
+        } else {
+          result += `<td>${day++}</td>`
+        }
+        if (day > currentMonthLastDay && i === 4) {
+          let day = 1
+          while (j < 7) {
+            result += `<td class="next-month">${day++}</td>`
+            j++
+          }
+          isMonthOver = true
+        }
+      }
+      result += '</tr>'
+      console.log(result)
+    }
+    if (isMonthOver) {
+      console.log('</table>')
+      return
+    }
+    dayOfWeek = 1
+    let daysLeftToPrint = currentMonthLastDay - day
+    result = '  <tr>'
+    for (let i = 0; i <= daysLeftToPrint; i++) {
+      if (day === currentDay) {
+        result += `<td class="today">${day++}</td>`
+      } else {
+        result += `<td>${day++}</td>`
+      }
+      dayOfWeek++
+    }
+    // while (day < currentMonthLastDay) {
+    //   if (day === currentDay) {
+    //     result += `<td class="today">${day++}</td>`
+    //   } else {
+    //     result += `<td>${day++}</td>`
+    //   }
+    //   dayOfWeek++
+    // }
 
-//     for (let i = 1; i <= 3; i++) {
-//       let dayOfWeekCounter = 1
+    let nextMonthDaysToPrint = 7 - dayOfWeek + 1
+    day = 1
+    for (let i = 0; i < nextMonthDaysToPrint; i++) {
+      result += `<td class="next-month">${day++}</td>`
+    }
+    result += '</tr>'
+    console.log(result)
+    console.log('</table>')
+  }
+}
 
-//       resultString = '  <tr>'
-//       while (true) {
-//         resultString += `<td>${dayCounter++}</td>`
-//         dayOfWeekCounter++
-
-//         if (dayOfWeekCounter === 8) {
-//           break
-//         }
-//       }
-//       resultString += '</tr>'
-//       console.log(resultString)
-//     }
-
-//     let lastDayOfMonthDayOfWeek = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1).getDay()
-
-//     let numberOfDaysOfNextMonth = 7 - lastDayOfMonthDayOfWeek
-
-//     resultString = '  <tr>'
-//     for (let i = 1; i <= lastDayOfMonthDayOfWeek; i++) {
-//       resultString += `<td>${dayCounter++}</td>`
-//     }
-
-//     let nextMonthDaysCounter = 1
-//     for (let i = 0; i < numberOfDaysOfNextMonth; i++) {
-//       resultString += `<td class="next-month">${nextMonthDaysCounter++}</td>`
-//     }
-
-//     resultString += '</tr>'
-//     console.log(resultString)
-//     console.log('</table>')
-//   }
-// }
+solve(['4', '9', '2016'])
