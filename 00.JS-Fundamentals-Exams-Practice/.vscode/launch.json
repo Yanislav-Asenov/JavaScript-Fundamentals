@@ -5,7 +5,7 @@
       "name": "Launch",
       "type": "node",
       "request": "launch",
-      "program": "${workspaceRoot}/JavaScript Basics Retake - 11 May 2016/01.medenka-wars.js",
+      "program": "${workspaceRoot}/13 May 2015 - JavaScript Basics/02.the-captain-obvious-tribulation.js",
       "stopOnEntry": false,
       "args": [],
       "cwd": "${workspaceRoot}",

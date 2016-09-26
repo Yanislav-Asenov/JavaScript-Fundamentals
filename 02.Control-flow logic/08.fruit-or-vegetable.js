@@ -19,6 +19,7 @@ function solve ([input]) {
       break
     default:
       console.log('unknown')
+	  break
   }
 }
 
