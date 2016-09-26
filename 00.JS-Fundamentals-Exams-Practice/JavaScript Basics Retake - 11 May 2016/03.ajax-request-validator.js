@@ -39,6 +39,10 @@ function solve(arr) {
       let targetCount = Number(match[1])
       let targetLetters = match[2]
 
+      if (targetCount === 0) {
+        return true
+      }
+
       let counter = 0
       for (let letter of credentials) {
         if (targetLetters === letter) {
