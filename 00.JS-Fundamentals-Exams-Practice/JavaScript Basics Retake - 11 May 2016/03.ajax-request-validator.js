@@ -1,67 +1,72 @@
-function solve(arr) {
-  let hashPattern = arr.pop()
-  // arr = arr.join('\n')
-  // arr += '\n'
-  // let regex = /Method:\s(POST|GET|DELETE|PUT)\nCredentials: (Bearer|Basic)\s([a-zA-Z0-9]+)\nContent: ([a-zA-Z0-9.]+)\n/g
-  let methodRegex = /Method:\s(POST|GET|DELETE|PUT)\n/
-  let credentialsRegex = /Credentials: (Bearer|Basic)\s([a-zA-Z0-9]+)\n/
-  let contentRegex = /Content: ([a-zA-Z0-9.]+)\n/
+function ajaxRequestValidator (arr) {
+  let regexHashPattern = /(\d+)([a-zA-Z]{1})/g
+  let hashPattern = {
+    full: arr.pop(),
+    patterns: [],
+    matches: null
+  }
+  while ((hashPattern.matches = regexHashPattern.exec(hashPattern.full)) !== null) {
+    hashPattern.patterns.push({
+      symbol: hashPattern.matches[2],
+      count: Number(hashPattern.matches[1])
+    })
+  }
 
-  for (let i = 0; i < arr.length - 2; i += 3) {
-    let methodString = arr[i] + '\n'
-    let credentialsString = arr[i + 1] + '\n'
-    let contentString = arr[i + 2] + '\n'
+  let methodPattern = /^Method: (GET|POST|PUT|DELETE)$/
+  let authPattern = /^Credentials: (Bearer|Basic) ([a-zA-Z0-9]+)$/
+  let contentPattern = /^Content: ([a-zA-Z0-9.]+)$/
 
-    let method = methodRegex.exec(methodString)[1]
-    let credentialsArgs = credentialsRegex.exec(credentialsString)
-    let credentialsAuthorization = credentialsArgs[1]
-    let credentialsBody = credentialsArgs[2]
-    let content = contentRegex.exec(contentString)
+  let request = null
 
-    if (!method || !credentialsArgs || !content || !credentialsAuthorization || !credentialsBody) {
-      console.log('Response-Code:400')
+  for (let i = 0; i < arr.length; i += 3) {
+    arr[i] = arr[i]
+    let methodMatches = methodPattern.exec(arr[i])
+    let authMatches = authPattern.exec(arr[i + 1])
+    let contentMatches = contentPattern.exec(arr[i + 2])
+
+    if (!methodMatches || !authMatches || !contentMatches) {
+      console.log(`Response-Code:400`)
+      continue
+    }
+
+    request = {
+      method: methodMatches[1],
+      authType: authMatches[1],
+      authContent: authMatches[2]
+    }
+
+    if (request.method !== 'GET' && request.authType !== 'Bearer') {
+      console.log(`Response-Method:${request.method}&Code:401`)
+      continue
+    }
+
+    if (checkAuth(request)) {
+      console.log(`Response-Method:${request.method}&Code:200&Header:${request.authContent}`)
     } else {
-      if (method !== 'GET' && credentialsAuthorization === 'Basic') {
-        console.log(`Response-Method:${method}&Code:401`)
-      } else if (!isAuthorizationTokenValid(hashPattern, credentialsBody)) {
-        console.log(`Response-Method:${method}&Code:403`)
-      } else {
-        console.log(`Response-Method:${method}&Code:200&Header:${credentialsBody}`)
-      }
+      console.log(`Response-Method:${request.method}&Code:403`)
     }
   }
 
-  function isAuthorizationTokenValid (pattern, credentials) {
-    let patternRegex = /(\d)([a-zA-Z])/g
-    let match = patternRegex.exec(pattern)
+  function checkAuth (request) {
+    for (let i = 0; i < hashPattern.patterns.length; i++) {
+      let patternSymbol = hashPattern.patterns[i].symbol.toLowerCase()
+      let patternCount = hashPattern.patterns[i].count
 
-    while (match) {
-      let targetCount = Number(match[1])
-      let targetLetters = match[2]
-
-      if (targetCount === 0) {
-        return true
-      }
-
-      let counter = 0
-      for (let letter of credentials) {
-        if (targetLetters === letter) {
-          counter++
+      let symbolCount = 0
+      for (let j = 0; j < request.authContent.length; j++) {
+        if (patternSymbol === request.authContent[j].toLowerCase()) {
+          symbolCount++
         }
       }
-
-      if (counter === targetCount) {
+      if (symbolCount === patternCount) {
         return true
       }
-
-      match = patternRegex.exec(pattern)
     }
-
     return false
   }
 }
 
-// solve([
+// ajaxRequestValidator([
 //   'Method: GET',
 //   'Credentials: Bearer asd918721jsdbhjslkfqwkqiuwjoxXJIdahefJAB',
 //   'Content: users.asd.1782452.278asd',
@@ -69,17 +74,4 @@ function solve(arr) {
 //   'Credentials: Basic 028591u3jtndkgwndsdkfjwelfqkjwporjqebhas',
 //   'Content: Johnathan',
 //   '2q'
-// ])
-
-// solve([
-//   'Method: PUT',
-//   'Credentials: Bearer as9133jsdbhjslkfqwkqiuwjoxXJIdahefJAB',
-//   'Content: users.asd/1782452$278///**asd123',
-//   'Method: POST',
-//   'Credentials: Bearer 028591u3jtndkgwndskfjwelfqkjwporjqebhas',
-//   'Content: Johnathan',
-//   'Method: DELETE',
-//   'Credentials: Bearer 05366u3jtndkgwndssfsfgeryerrrrrryjihvx',
-//   'Content: This.is.a.sample.content',
-//   '2e5g'
 // ])
