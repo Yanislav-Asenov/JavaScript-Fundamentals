@@ -70,11 +70,15 @@ function solve (inputArr) {
 
   for (let index in modules) {
     if (modules[index].isValid) {
-      validModules.push({
+      // validModules.push({
+      //   controllers: modules[index].controllers,
+      //   models: modules[index].models,
+      //   views: modules[index].views
+      validModules[index.toString()] = {
         controllers: modules[index].controllers,
         models: modules[index].models,
         views: modules[index].views
-      })
+      }
     }
   }
 
@@ -119,8 +123,8 @@ function solve (inputArr) {
 solve([
   '$controller=\'Language1\'&app=\'Language Parser\'',
   '$controller=\'Language2\'&app=\'Language Parser\'',
-  '$controller=\'C#Garbage1\'&app=\'Garbage Collector\'',
-  '$controller=\'C++Garbage2\'&app=\'Garbage Collector\'',
+  '$controller=\'C#Garbage1\'&app=\'Language Parser\'',
+  '$controller=\'C++Garbage2\'&app=\'Language Parser\'',
   '$app=\'Garbage Collector\'',
   '$controller=\'Garbage3\'&app=\'Garbage Collector\'',
   '$controller=\'Garbage4\'&app=\'Garbage Collector\'',
