@@ -1,8 +1,8 @@
 function solve (inputArr) {
-  let appRegex = /^\$app\s*=\s*'([^$]+)'$/
-  let controllerRegex = /^\$controller\s*=\s*'([^$]+)'\s*&\s*app\s*=\s*'([^$]+)'$/
-  let modelRgex = /^\$model\s*=\s*'([^$]+)'\s*&\s*app\s*=\s*'([^$]+)'$/
-  let viewRegex = /^\$view\s*=\s*'([^$]+)'\s*&\s*app\s*=\s*'([^$]+)'$/
+  let appRegex = /^\$app='([^']+?)'$/
+  let controllerRegex = /^\$controller='([^']+?)'&app='([^']+?)'$/
+  let modelRgex = /^\$model='([^']+?)'&app='([^']+?)'$/
+  let viewRegex = /^\$view='([^$']+?)'&app='([^$']+?)'$/
 
   let modules = {}
 
@@ -70,48 +70,49 @@ function solve (inputArr) {
 
   for (let index in modules) {
     if (modules[index].isValid) {
-      // validModules.push({
-      //   controllers: modules[index].controllers,
-      //   models: modules[index].models,
-      //   views: modules[index].views
-      validModules[index.toString()] = {
-        controllers: modules[index].controllers,
-        models: modules[index].models,
-        views: modules[index].views
-      }
+      validModules.push({
+        'controllers': modules[index].controllers,
+        'models': modules[index].models,
+        'views': modules[index].views,
+        'name': index
+      })
     }
   }
 
-  // for (let index in modules) {
-  //   validModules[index].controllers.sort((a, b) => {
-  //     return a.localeCompare(b)
-  //   })
+  for (let i = 0; i < validModules.length; i++) {
+    validModules[i].controllers.sort((a, b) => {
+      return a.localeCompare(b)
+    })
+    validModules[i].models.sort((a, b) => {
+      return a.localeCompare(b)
+    })
+    validModules[i].views.sort((a, b) => {
+      return a.localeCompare(b)
+    })
+  }
 
-  //   validModules[index].models.sort((a, b) => {
-  //     return a.localeCompare(b)
-  //   })
-
-  //   validModules[index].views.sort((a, b) => {
-  //     return a.localeCompare(b)
-  //   })
-  // }
-
-
-  validModules.sort((a, b) => {
+  validModules = validModules.sort((a, b) => {
     if (a.controllers.length !== b.controllers.length) {
-      return a.controllers.length > b.controllers.length
+      return a.controllers.length < b.controllers.length
     } else if (a.models.length !== b.models.length) {
-      return a.models.length < b.models.length
-    } else {
-      return 0
+      return a.models.length > b.models.length
     }
   })
 
-  console.log(validModules)
+  let resultObject = {}
+  for (let i = 0; i < validModules.length; i++) {
+    resultObject[validModules[i].name] = {
+      controllers: validModules[i].controllers,
+      models: validModules[i].models,
+      views: validModules[i].views
+    }
+  }
+
+  console.log(JSON.stringify(resultObject))
 
   function containsApp (appName) {
     for (let index in modules) {
-      if (index === appName) {
+      if (index.toLocaleLowerCase() === appName.toLocaleLowerCase()) {
         return true
       }
     }
@@ -120,25 +121,29 @@ function solve (inputArr) {
   }
 }
 
-solve([
-  '$controller=\'Language1\'&app=\'Language Parser\'',
-  '$controller=\'Language2\'&app=\'Language Parser\'',
-  '$controller=\'C#Garbage1\'&app=\'Language Parser\'',
-  '$controller=\'C++Garbage2\'&app=\'Language Parser\'',
-  '$app=\'Garbage Collector\'',
-  '$controller=\'Garbage3\'&app=\'Garbage Collector\'',
-  '$controller=\'Garbage4\'&app=\'Garbage Collector\'',
-  '$app=\'Language Parser\''
-])
+// solve([
+//   '$controller=\'Language1\'&app=\'Language Parser\'',
+//   '$controller=\'Language2\'&app=\'Language Parser\'',
+//   '$controller=\'C#Garbage1\'&app=\'Language Parser\'',
+//   '$controller=\'C++Garbage2\'&app=\'Language Parser\'',
+//   '$app=\'Garbage Collector\'',
+//   '$controller=\'Garbage3\'&app=\'Garbage Collector\'',
+//   '$controller=\'Garbage4\'&app=\'Garbage Collector\'',
+//   '$app=\'Language Parser\''
+// ])
 
 // solve([
-//   '$controller=\'PHPController\'&app=\'Language Parser\'',
-//   '$controller=\'JavaController\'&app=\'Language Parser\'',
-//   '$controller=\'C#Controller\'&app=\'Language Parser\'',
-//   '$controller=\'C++Controller\'&app=\'Garbage Collector\'',
 //   '$app=\'Garbage Collector\'',
-//   '$controller=\'GarbageController\'&app=\'Garbage Collector\'',
-//   '$controller=\'SpamController\'&app=\'Garbage Collector\'',
-//   '$model=\'SpamModel\'&app=\'Garbage Collector\'',
 //   '$app=\'Language Parser\''
+// ])
+
+// solve([
+//   `$controller='PHPController'&app='Language Parser'`,
+//   `$controller='JavaController'&app='Language Parser'`,
+//   `$controller='C#Controller'&app='Language Parser'`,
+//   `$controller='C++Controller'&app='Language Parser'`,
+//   `$app='Garbage Collector'`,
+//   `$controller='GarbageController'&app='Garbage Collector'`,
+//   `$controller='SpamController'&app='Garbage Collector'`,
+//   `$app='Language Parser'`
 // ])
