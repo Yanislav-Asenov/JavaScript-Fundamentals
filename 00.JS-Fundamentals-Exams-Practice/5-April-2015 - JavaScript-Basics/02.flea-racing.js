@@ -1,97 +1,90 @@
 function solve (arr) {
-  let numberOfJumpsAllowed = Number(arr[0])
-  let trackLength = Number(arr[1])
-  let fleasArray = []
+  let numberOfJumpsAllowed = Number(arr.shift().trim())
+  let trackLength = Number(arr.shift().trim())
+  let numberOfFleas = arr.length
+  let trackMatrix = []
 
-// Fill fleas into array
-  for (let i = 2; i < arr.length; i++) {
-    let fleaArgs = arr[i].split(/, /g)
-    let flea = { name: fleaArgs[0], jumpDistance: Number(fleaArgs[1]), position: 1, isWinner: false, nickname: fleaArgs[0][0].toUpperCase(), numberOfJumps: 0 }
-
-    fleasArray.push(flea)
+  for (let row = 0; row < numberOfFleas; row++) {
+    trackMatrix.push('.'.repeat(trackLength).split(''))
   }
 
-// Manage flea stats
+  let fleas = []
+  for (let row = 0; row < numberOfFleas; row++) {
+    let fleaArgs = arr[row].split(/,/).filter(x => x !== '')
+    let fleaName = fleaArgs[0].trim()
+    let fleaJumpDistance = Number(fleaArgs[1].trim())
+    fleas.push({
+      'name': fleaName,
+      'nickname': fleaName.toUpperCase()[0],
+      'jumpDistance': fleaJumpDistance,
+      'position': 0
+    })
+  }
+
+  for (let row = 0; row < fleas.length; row++) {
+    trackMatrix[row][0] = fleas[row].nickname
+  }
+
+  let totalJumpsCount = 0
+  let winnerName = ''
   let hasWinner = false
-  for (let trackRow = 0; trackRow < fleasArray.length; trackRow++) {
-    for (let trackCol = 0; trackCol < numberOfJumpsAllowed; trackCol++) {
-      for (let j = 0; j < fleasArray.length; j++) {
-        let currentFlea = fleasArray[j]
+  while (totalJumpsCount < numberOfJumpsAllowed && !hasWinner) {
+    for (let i = 0; i < fleas.length; i++) {
+      trackMatrix[i][fleas[i].position] = '.'
+      fleas[i].position += fleas[i].jumpDistance
 
-        if (currentFlea.position + currentFlea.jumpDistance >= trackLength && currentFlea.numberOfJumps < numberOfJumpsAllowed) {
-          fleasArray.map((el) => {
-            el.isWinner = false
-          })
-
-          currentFlea.isWinner = true
-          currentFlea.position = trackLength
-          currentFlea.numberOfJumps++
-          hasWinner = true
-          break
-        } else if (currentFlea.numberOfJumps < numberOfJumpsAllowed) {
-          currentFlea.position += currentFlea.jumpDistance
-          currentFlea.numberOfJumps++
-          let isOtherFleaAtSamePosition = false
-          for (let i = 0; i < fleasArray.length; i++) {
-            if (fleasArray[i].position === currentFlea.position && fleasArray[i].name !== currentFlea.name) {
-              isOtherFleaAtSamePosition = true
-              break
-            }
-          }
-
-          if (isOtherFleaAtSamePosition) {
-            fleasArray.map((el) => {
-              el.isWinner = false
-            })
-            currentFlea.isWinner = true
-          }
-        }
-
-        fleasArray[j] = currentFlea
-        if (hasWinner) break
+      if (fleas[i].position >= trackLength - 1) {
+        winnerName = fleas[i].name
+        trackMatrix[i][trackLength - 1] = fleas[i].nickname
+        hasWinner = true
+        break
       }
 
-      if (hasWinner) break
+      trackMatrix[i][fleas[i].position] = fleas[i].nickname
     }
+    totalJumpsCount++
   }
 
-  printAudiance(trackLength)
-
-  for (let i = 0; i < fleasArray.length; i++) {
-    let currentFlea = fleasArray[i]
-    let trackRow = ''
-    for (let j = 1; j <= trackLength; j++) {
-      if (currentFlea.position === j) {
-        trackRow += currentFlea.nickname
-      } else {
-        trackRow += '.'
+  let maxDistance = -1
+  if (!hasWinner) {
+    for (let i = 0; i < fleas.length; i++) {
+      if (fleas[i].position >= maxDistance) {
+        winnerName = fleas[i].name
+        maxDistance = fleas[i].position
       }
     }
-
-    console.log(trackRow)
   }
 
-  printAudiance(trackLength)
-  let winnerFlea
-
-  for (let i = 0; i < fleasArray.length; i++) {
-    if (fleasArray[i].isWinner) {
-      winnerFlea = fleasArray[i]
-      break
-    }
+  console.log('#'.repeat(trackLength))
+  console.log('#'.repeat(trackLength))
+  for (let row = 0; row < fleas.length; row++) {
+    console.log(trackMatrix[row].join(''))
   }
-
-  console.log('Winner: ' + winnerFlea.name)
-
-  function printAudiance (trackLength) {
-    for (let row = 0; row < 2; row++) {
-      let rowOfAudiance = ''
-      for (let i = 0; i < trackLength; i++) {
-        rowOfAudiance += '#'
-      }
-      console.log(rowOfAudiance)
-    }
-  }
+  console.log('#'.repeat(trackLength))
+  console.log('#'.repeat(trackLength))
+  console.log(`Winner: ${winnerName}`)
 }
 
-solve()
+// solve([
+//   '10',
+//   '19',
+//   'angel, 9',
+//   'Boris, 10',
+//   'Georgi, 3',
+//   'Dimitar, 7'
+// ])
+
+// solve([
+//   '1',
+//   '1',
+//   'cura, 1',
+//   'yanura, 1',
+//   'qjkura, 1',
+//   'batista, 1',
+//   'Pepi, 1',
+//   'UlTraFlea, 1',
+//   'BOIKO, 1',
+//   'stoiko, 1',
+//   'mravka, 1',
+//   'prase, 1'
+// ])
