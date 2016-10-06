@@ -19,5 +19,5 @@ function solve (arr) {
   }
 }
 
-// solve(['[{"name":"Pesho","score":479},{"name":"Gosho","score":205}]'])
-// solve(['[{"name":"Pesho & Kiro","score":479},{"name":"Gosho, Maria & Viki","score":205}]'])
+solve(['[{"name":"Pesho","score":479},{"name":"Gosho","score":205}]'])
+solve(['[{"name":"Pesho & Kiro","score":479},{"name":"Gosho, Maria & Viki","score":205}]'])

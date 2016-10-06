@@ -16,6 +16,6 @@ function solve (arr) {
   })
 }
 
-// solve([
-//   'Far too slow, you\'re far too slow.'
-// ])
+solve([
+  'Far too slow, you\'re far too slow.'
+])

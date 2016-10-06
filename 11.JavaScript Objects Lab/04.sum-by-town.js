@@ -15,13 +15,13 @@ function solve (arr) {
   console.log(JSON.stringify(towns))
 }
 
-// solve([
-//   'Sofia',
-//   '20',
-//   'Varna',
-//   '3',
-//   'Sofia',
-//   '5',
-//   'Varna',
-//   '4'
-// ])
+solve([
+  'Sofia',
+  '20',
+  'Varna',
+  '3',
+  'Sofia',
+  '5',
+  'Varna',
+  '4'
+])

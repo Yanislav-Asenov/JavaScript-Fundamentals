@@ -13,6 +13,6 @@ function solve (arr) {
   console.log(JSON.stringify(wordOccurrences))
 }
 
-// solve([
-//   'Far too slow, you\'re far too slow.'
-// ])
+solve([
+  'Far too slow, you\'re far too slow.'
+])
