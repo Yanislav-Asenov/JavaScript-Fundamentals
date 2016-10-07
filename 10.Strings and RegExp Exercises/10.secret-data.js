@@ -1,34 +1,8 @@
 function solve (arr) {
-  let usernamePattern = /(\*[A-Z][a-zA-Z]*)( |\t|$)/
-  let phonePattern = /(\+[0-9-]{10})( |\t|$)/
-  let idPattern = /(![0-9a-zA-Z]+)( |\t|$)/
-  let secretBasesPattern = /(_[0-9a-zA-Z]+)( |\t|$)/
-
   for (let i = 0; i < arr.length; i++) {
-    let usernameMatch = usernamePattern.exec(arr[i])
-    if (usernameMatch) {
-      // (regex, result)
-      arr[i] = arr[i].replace(usernameMatch, '|'.repeat(usernameMatch[1].length))
-    }
-
-    let phoneMatch = phonePattern.exec(arr[i])
-    if (phoneMatch) {
-      arr[i] = arr[i].replace(phoneMatch, '|'.repeat(phoneMatch[1].length))
-    }
-
-    let idMatch = idPattern.exec(arr[i])
-    if (idMatch) {
-      arr[i] = arr[i].replace(idMatch, '|'.repeat(idMatch[1].length))
-    }
-
-    let secretBasesMatch = secretBasesPattern.exec(arr[i])
-    if (secretBasesMatch) {
-      arr[i] = arr[i].replace(secretBasesMatch, '|'.repeat(secretBasesMatch[1].length))
-    }
-  }
-
-  for (let i = 0; i < arr.length; i++) {
-    console.log(arr[i])
+    console.log(arr[i].replace(
+            /(\*[A-Z][a-zA-Z]*)(?= |\t|$)|(\+[0-9-]{10})(?= |\t|$)|(![0-9a-zA-Z]+)(?= |\t|$)|(_[0-9a-zA-Z]+)(?= |\t|$)/g,
+            (m) => '|'.repeat(m.length)))
   }
 }
 
