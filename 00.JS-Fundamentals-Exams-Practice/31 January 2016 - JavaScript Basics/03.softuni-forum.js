@@ -1,12 +1,11 @@
 function solve (arr) {
-  let bannedUsernames = arr.pop().split(/\s+/).filter(x => x !== '')
-  let codeBlocksPattern = /<code>(.|\n)*?<\/code>\n?/g
+  let bannedUsernames = arr.pop().split(' ')
+  let codeBlocksPattern = /<code>[\s\S]+?<\/code>/g
   let inputText = arr.join('\n')
   let codeBlocks = []
 
   let codeBlockMatch = codeBlocksPattern.exec(inputText)
   let count = 0
-
   while (codeBlockMatch) {
     inputText = inputText.replace(codeBlockMatch[0], 'Янислав' + ++count)
     codeBlocks.push({
@@ -17,41 +16,21 @@ function solve (arr) {
     codeBlockMatch = codeBlocksPattern.exec(inputText)
   }
 
-  // if (inputText.indexOf('<code>') > -1) {
-  //   let indexOfStartTag = inputText.indexOf('<code>')
-  //   let indexOfEndTag = inputText.indexOf('</code>')
-  //   let textToReplace = inputText.substring(indexOfStartTag, indexOfEndTag + 7)
-
-  //   inputText = inputText.replace(textToReplace, 'Янислав' + ++count)
-  //   codeBlocks.push({
-  //     'position': 'Янислав' + count,
-  //     'body': textToReplace
-  //   })
-  // }
-
-  let usernamePattern = /#([a-zA-Z][a-zA-Z0-9_-]{1,}[a-zA-Z0-9])/
-
-  inputText = inputText.split('\n')
-  for (let i = 0; i < inputText.length; i++) {
-    let usernameMatch = usernamePattern.exec(inputText[i])
-
-    while (usernameMatch) {
-      let username = usernameMatch[1]
-
-      if (bannedUsernames.indexOf(username) > -1) {
-        inputText[i] = inputText[i].replace(usernameMatch[0], (x) => '*'.repeat(x.length - 1))
-        usernameMatch = usernamePattern.exec(inputText[i])
-        continue
-      }
-
-      let usernameReplacer = `<a href="/users/profile/show/${usernameMatch[1]}">${usernameMatch[1]}</a>`
-      inputText[i] = inputText[i].replace(usernameMatch[0], usernameReplacer)
-
-      usernameMatch = usernamePattern.exec(inputText[i])
+  bannedUsernames.forEach((el) => {
+    let censoredUsernamePattern = new RegExp('(#\\b' + el + ')\\b', 'g')
+    let match = censoredUsernamePattern.exec(inputText)
+    while (match) {
+      let censoredName = match[1]
+      let nameReplacer = '*'.repeat(censoredName.length)
+      inputText.replace(censoredName, nameReplacer)
+      match = censoredUsernamePattern.exec(inputText)
     }
-  }
+  })
 
-  inputText = inputText.join('\n')
+  let usernamePattern = /#(\b[a-zA-Z][\w\-]+[a-zA-Z0-9]\b)/
+  let linkOpeningTag = '<a href="/users/profile/show/'
+  let linkClosingTag = '</a>'
+  inputText = inputText.replace(usernamePattern, linkOpeningTag + '$1">$1' + linkClosingTag)
 
   for (let index in codeBlocks) {
     inputText = inputText.replace(codeBlocks[index].position, codeBlocks[index].body)
