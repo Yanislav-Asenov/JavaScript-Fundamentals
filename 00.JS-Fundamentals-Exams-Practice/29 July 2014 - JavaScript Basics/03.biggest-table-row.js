@@ -24,8 +24,15 @@ function solve (inputArr) {
       currentNumbers['thirdNumber'] = thirdStoreNum
     }
 
-    for (let i = 0; i < currentNumbers.length; i++) {
-      currentSum += currentNumbers[i]
+    let keys = Object.keys(currentNumbers)
+
+    for (let index in currentNumbers) {
+      currentSum += currentNumbers[index]
+    }
+
+    if (currentSum > maxSum) {
+      maxSum = currentSum
+      
     }
 
     match = pattern.exec(text)
