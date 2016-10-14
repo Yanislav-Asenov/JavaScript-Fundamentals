@@ -44,7 +44,6 @@ function solve (inputArr) {
       resultObject[index] = sortedVenues
     }
 
-    // sort bands
     for (let index in resultObject) {
       for (let venueIndex in resultObject[index]) {
         resultObject[index][venueIndex].sort((a, b) => a.localeCompare(b))
