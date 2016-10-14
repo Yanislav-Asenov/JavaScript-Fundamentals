@@ -1,62 +1,60 @@
 function solve (inputArr) {
-  let objects = new Map()
+  let colors = []
 
   for (let i = 0; i < inputArr.length; i++) {
     let lineArgs = inputArr[i].split('|')
     let color = lineArgs[0]
-    let ageWinOrLoss = lineArgs[1]
+    let infoType = lineArgs[1]
 
-    if (!objects.has(color)) {
-      objects.set(color, {
-        age: false,
-        name: false,
-        opponents: [],
+    if (!colors[color]) {
+      colors[color] = {
+        age: 'Qni',
+        name: 'Qni',
         wins: 0,
-        loses: 0
-      })
+        losses: 0,
+        opponents: []
+      }
     }
 
-    if (ageWinOrLoss === 'age') {
-      let age = lineArgs[2]
-      objects.get(color).age = age
-    } else if (ageWinOrLoss === 'win') {
-      let opponentName = lineArgs[2]
-      objects.get(color).opponents.push(opponentName)
-      objects.get(color).wins++
-    } else if (ageWinOrLoss === 'loss') {
-      let opponentName = lineArgs[2]
-      objects.get(color).opponents.push(opponentName)
-      objects.get(color).loses++
-    } else if (ageWinOrLoss === 'name') {
-      let playerName = lineArgs[2]
-      objects.get(color).name = playerName
+    switch (infoType) {
+      case 'win':
+        colors[color].wins++
+        colors[color].opponents.push(lineArgs[2])
+        break
+      case 'loss':
+        colors[color].losses++
+        colors[color].opponents.push(lineArgs[2])
+        break
+      case 'name':
+        colors[color].name = lineArgs[2]
+        break
+      case 'age':
+        colors[color].age = lineArgs[2]
+        break
     }
   }
 
   let resultObject = {}
+  let sortedKeys = Object.keys(colors).sort()
 
-  for (let [key, value] of objects) {
-    let color = key
-    let currentObject = value
-
-    if (!currentObject.name || !currentObject.age) {
+  for (let key of sortedKeys) {
+    let index = key
+    let currentObject = colors[index]
+    if (currentObject.name === 'Qni' || currentObject.age === 'Qni') {
       continue
     }
 
-    let rank = (currentObject.wins + 1) / (currentObject.loses + 1)
-    resultObject[color] = {
+    currentObject.opponents.sort()
+    let rank = (currentObject.wins + 1) / (currentObject.losses + 1)
+    resultObject[index] = {
       age: currentObject.age,
       name: currentObject.name,
-      opponents: currentObject.opponents.sort((a, b) => a.localeCompare(b)),
+      opponents: currentObject.opponents,
       rank: rank.toFixed(2)
     }
   }
 
-  if (resultObject.length === 0) {
-    console.log('[]')
-  } else {
-    console.log(JSON.stringify(resultObject))
-  }
+  console.log(JSON.stringify(resultObject))
 }
 
 // solve([
@@ -77,4 +75,20 @@ function solve (inputArr) {
 //   'purple|name|VladoKaramfilov',
 //   'blue|age|21',
 //   'blue|loss|Pesho'
+// ])
+
+// solve([
+//   'red|name|kiko',
+//   'red|win|Vladko',
+//   'blue|age|12',
+//   'green|age|13',
+//   'green|win|gosho',
+//   'red|age|12',
+//   'green|name|Pesho',
+//   'green|win|ico',
+//   'green|win|Gosho',
+//   'green|win|qfkata',
+//   'green|win|stamat',
+//   'green|win|petko',
+//   'green|win|mariya'
 // ])
